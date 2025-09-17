@@ -2,39 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Mental Wellness App Design System - Calming & Empathetic */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Main background - soft, warm white */
+    --background: 210 20% 98%;
+    --foreground: 215 25% 27%;
 
+    /* Cards - pure white with subtle warmth */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 27%;
 
+    /* Popover elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 27%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - calming blue-green */
+    --primary: 195 55% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 195 45% 85%;
+    --primary-glow: 195 55% 75%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - soft sage green */
+    --secondary: 140 35% 85%;
+    --secondary-foreground: 140 45% 25%;
+    --secondary-dark: 140 35% 65%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted - gentle gray-blue */
+    --muted: 210 15% 95%;
+    --muted-foreground: 215 15% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - warm coral for emotional warmth */
+    --accent: 15 75% 75%;
+    --accent-foreground: 15 45% 25%;
+    --accent-light: 15 65% 90%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Success - soft green for positive moments */
+    --success: 120 40% 60%;
+    --success-foreground: 0 0% 100%;
+    --success-light: 120 30% 90%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Warning - gentle yellow for caution */
+    --warning: 45 85% 70%;
+    --warning-foreground: 45 55% 25%;
+
+    /* Destructive - muted red for crisis situations */
+    --destructive: 0 55% 65%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs - soft and approachable */
+    --border: 210 20% 88%;
+    --input: 210 15% 92%;
+    --ring: 195 55% 45%;
+
+    /* Gradients for emotional warmth */
+    --gradient-calm: linear-gradient(135deg, hsl(195 45% 85%), hsl(140 35% 85%));
+    --gradient-warm: linear-gradient(135deg, hsl(15 65% 90%), hsl(45 75% 90%));
+    --gradient-primary: linear-gradient(135deg, hsl(195 55% 45%), hsl(195 55% 65%));
+    
+    /* Shadows for depth and comfort */
+    --shadow-soft: 0 2px 20px -5px hsl(195 55% 45% / 0.15);
+    --shadow-warm: 0 4px 30px -10px hsl(15 75% 75% / 0.2);
+    --shadow-glow: 0 0 30px hsl(195 55% 75% / 0.3);
+
+    /* Animation curves for gentle interactions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --radius: 0.5rem;
 
