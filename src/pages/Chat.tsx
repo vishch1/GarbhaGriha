@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Heart, Send, ArrowLeft, AlertTriangle, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   id: string;
@@ -19,14 +18,13 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hi there! I'm MindSpace AI, your compassionate mental health companion. I'm here to listen without judgment and support you through whatever you're experiencing. Whether you want to talk about your mood, stress, relationships, or anything else on your mind - I'm here for you. How are you feeling today? 💙",
+      content: "Hi there! I'm your AI wellness companion. I'm here to listen without judgment and support you on your mental health journey. How are you feeling today? 💙",
       isUser: false,
       timestamp: new Date(),
     }
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [conversationHistory, setConversationHistory] = useState<Array<{role: string, content: string}>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -38,35 +36,23 @@ const Chat = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Enhanced crisis detection
+  // Mock crisis detection - in real app this would use NLP
   const detectCrisisKeywords = (message: string): boolean => {
-    const crisisKeywords = ['suicide', 'kill myself', 'end it all', 'self-harm', 'hurt myself', 'want to die', 'cutting', 'overdose'];
+    const crisisKeywords = ['suicide', 'kill myself', 'end it all', 'self-harm', 'hurt myself', 'want to die'];
     return crisisKeywords.some(keyword => message.toLowerCase().includes(keyword));
   };
 
-  const callGeminiAI = async (userMessage: string): Promise<string> => {
-    try {
-      const { data, error } = await supabase.functions.invoke('gemini-health-chat', {
-        body: {
-          message: userMessage,
-          conversationHistory: conversationHistory
-        }
-      });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw new Error(error.message || 'Failed to get AI response');
-      }
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      return data.response;
-    } catch (error) {
-      console.error('Error calling Gemini AI:', error);
-      return "I apologize, but I'm having trouble connecting right now. Please try again in a moment. If you're in crisis, please contact emergency services immediately.";
-    }
+  const generateAIResponse = (userMessage: string): string => {
+    // Mock AI responses - in real app this would call GPT-4o API
+    const responses = [
+      "Thank you for sharing that with me. It takes courage to open up about how you're feeling. Can you tell me more about what's been on your mind?",
+      "I hear you, and your feelings are completely valid. Many young people go through similar experiences. What would help you feel a bit better right now?",
+      "That sounds really challenging. Remember that you're stronger than you know, and it's okay to feel this way. Have you tried any coping strategies that have helped before?",
+      "I'm glad you felt comfortable sharing that with me. Your mental health journey is unique, and every small step forward matters. What's one thing that brought you even a tiny bit of joy recently?",
+      "It's okay to not be okay sometimes. You're taking a positive step by talking about it. Would you like to try a brief breathing exercise together, or would you prefer to keep talking?"
+    ];
+    
+    return responses[Math.floor(Math.random() * responses.length)];
   };
 
   const sendMessage = async () => {
@@ -92,38 +78,18 @@ const Chat = () => {
       });
     }
 
-    try {
-      // Call Gemini AI
-      const aiResponseText = await callGeminiAI(inputValue);
-      
+    // Simulate AI thinking time
+    setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: aiResponseText,
+        content: generateAIResponse(inputValue),
         isUser: false,
         timestamp: new Date(),
       };
 
       setMessages(prev => [...prev, aiResponse]);
-      
-      // Update conversation history
-      setConversationHistory(prev => [
-        ...prev,
-        { role: 'user', content: inputValue },
-        { role: 'assistant', content: aiResponseText }
-      ]);
-      
-    } catch (error) {
-      console.error('Error getting AI response:', error);
-      const errorResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "I apologize, but I'm having trouble connecting right now. Please try again in a moment. If you're in crisis, please contact emergency services immediately.",
-        isUser: false,
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorResponse]);
-    } finally {
       setIsTyping(false);
-    }
+    }, 1500);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -167,9 +133,9 @@ const Chat = () => {
         <div className="container mx-auto">
           <div className="flex items-center gap-2 text-sm">
             <AlertTriangle className="w-4 h-4 text-destructive" />
-              <span className="text-destructive font-medium">
-                🚨 Crisis Support: National Suicide Prevention Lifeline: 988 | Crisis Text Line: Text HOME to 741741 | Emergency: 911
-              </span>
+            <span className="text-destructive font-medium">
+              If you're in crisis: Call 988 (Suicide & Crisis Lifeline) or text "HELLO" to 741741
+            </span>
           </div>
         </div>
       </div>
@@ -233,7 +199,7 @@ const Chat = () => {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            💙 This conversation is private and confidential. MindSpace AI is here to support your mental wellness journey.
+            This conversation is private and anonymous. I'm here to support you. 💙
           </p>
         </div>
       </div>
