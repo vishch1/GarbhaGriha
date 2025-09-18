@@ -96,15 +96,17 @@ const Index = () => {
             </p>
           </Card>
 
-          <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm">
-            <div className="w-12 h-12 bg-accent-light rounded-lg flex items-center justify-center mb-4">
-              <Heart className="w-6 h-6 text-accent" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Mood Tracking</h3>
-            <p className="text-muted-foreground">
-              Simple emoji-based mood tracking with insights and patterns to help you understand yourself better.
-            </p>
-          </Card>
+          <Link to="/mood">
+            <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm cursor-pointer">
+              <div className="w-12 h-12 bg-accent-light rounded-lg flex items-center justify-center mb-4">
+                <Heart className="w-6 h-6 text-accent" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Mood Tracking</h3>
+              <p className="text-muted-foreground">
+                Simple emoji-based mood tracking with insights and patterns to help you understand yourself better.
+              </p>
+            </Card>
+          </Link>
 
           <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm">
             <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mb-4">
