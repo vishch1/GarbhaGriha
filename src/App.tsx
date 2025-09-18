@@ -8,6 +8,7 @@ import Chat from "./pages/Chat";
 import Mood from "./pages/Mood";
 import Resources from "./pages/Resources";
 import Community from "./pages/Community";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/mood" element={<Mood />} />
           <Route path="/resources" element={<Resources />} />

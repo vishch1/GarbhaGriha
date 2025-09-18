@@ -22,6 +22,9 @@ const Index = () => {
             <Link to="/community">
               <Button variant="ghost" size="sm">Community</Button>
             </Link>
+            <Link to="/auth">
+              <Button variant="outline" size="sm">Sign In</Button>
+            </Link>
             <Link to="/chat">
               <Button variant="outline" size="sm">Start Chat</Button>
             </Link>
