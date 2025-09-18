@@ -92,7 +92,7 @@ const Index = () => {
             </div>
             <h3 className="text-xl font-semibold mb-2">AI Companion</h3>
             <p className="text-muted-foreground">
-              Chat with an empathetic AI trained to understand and support young people's mental health needs.
+              Chat 24/7 with an empathetic AI companion specially trained to understand young people's mental health needs. Get personalized support, coping strategies, and emotional guidance in a judgment-free space that's always available when you need it most.
             </p>
           </Card>
 
@@ -101,10 +101,10 @@ const Index = () => {
               <div className="w-12 h-12 bg-accent-light rounded-lg flex items-center justify-center mb-4">
                 <Heart className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Mood Tracking</h3>
-              <p className="text-muted-foreground">
-                Simple emoji-based mood tracking with insights and patterns to help you understand yourself better.
-              </p>
+            <h3 className="text-xl font-semibold mb-2">Mood Tracking</h3>
+            <p className="text-muted-foreground">
+              Track your daily emotions with simple emoji-based logging. Visualize patterns, identify triggers, and gain insights into your mental health journey with personalized analytics and progress tracking that helps you understand yourself better.
+            </p>
             </Card>
           </Link>
 
@@ -114,7 +114,7 @@ const Index = () => {
             </div>
             <h3 className="text-xl font-semibold mb-2">Wellness Tools</h3>
             <p className="text-muted-foreground">
-              Daily prompts for breathing exercises, journaling, gratitude practices, and self-care activities.
+              Access a comprehensive toolkit of mental wellness resources including guided breathing exercises, journaling prompts, gratitude practices, mindfulness meditation, sleep hygiene tips, and personalized self-care activities tailored to your needs.
             </p>
           </Card>
 
@@ -124,7 +124,7 @@ const Index = () => {
             </div>
             <h3 className="text-xl font-semibold mb-2">Peer Support</h3>
             <p className="text-muted-foreground">
-              Connect anonymously with other young people in a safe, moderated community space.
+              Connect with peers who understand your journey in a safe, moderated community. Share experiences anonymously, offer mutual support, participate in group discussions, and find comfort knowing you're not alone in your mental health journey.
             </p>
           </Card>
 
@@ -134,7 +134,7 @@ const Index = () => {
             </div>
             <h3 className="text-xl font-semibold mb-2">Crisis Support</h3>
             <p className="text-muted-foreground">
-              Immediate access to crisis helplines and professional resources when you need them most.
+              Get immediate help when you need it most. Access 24/7 crisis hotlines, emergency contacts, local mental health services, and professional resources. Our system recognizes crisis situations and provides instant support pathways to keep you safe.
             </p>
           </Card>
 
@@ -144,7 +144,7 @@ const Index = () => {
             </div>
             <h3 className="text-xl font-semibold mb-2">Gamification</h3>
             <p className="text-muted-foreground">
-              Earn badges and build streaks as you take care of your mental health and build positive habits.
+              Stay motivated with engaging gamification features. Earn achievement badges, maintain wellness streaks, unlock new tools, track progress milestones, and celebrate your mental health victories with a supportive reward system designed to encourage positive habits.
             </p>
           </Card>
         </div>
