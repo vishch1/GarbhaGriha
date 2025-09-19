@@ -10,6 +10,11 @@ import Resources from "./pages/Resources";
 import Community from "./pages/Community";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import AICompanion from "./pages/AICompanion";
+import WellnessTools from "./pages/WellnessTools";
+import PeerSupport from "./pages/PeerSupport";
+import CrisisSupport from "./pages/CrisisSupport";
+import Gamification from "./pages/Gamification";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +31,11 @@ const App = () => (
           <Route path="/mood" element={<Mood />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/ai-companion" element={<AICompanion />} />
+          <Route path="/wellness-tools" element={<WellnessTools />} />
+          <Route path="/peer-support" element={<PeerSupport />} />
+          <Route path="/crisis-support" element={<CrisisSupport />} />
+          <Route path="/gamification" element={<Gamification />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -99,15 +99,17 @@ const Index = () => {
         </h2>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm">
-            <div className="w-12 h-12 bg-primary-light rounded-lg flex items-center justify-center mb-4">
-              <MessageCircle className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">AI Companion</h3>
-            <p className="text-muted-foreground">
-              Chat 24/7 with an empathetic AI companion specially trained to understand young people's mental health needs. Get personalized support, coping strategies, and emotional guidance in a judgment-free space that's always available when you need it most.
-            </p>
-          </Card>
+          <Link to="/ai-companion">
+            <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm cursor-pointer">
+              <div className="w-12 h-12 bg-primary-light rounded-lg flex items-center justify-center mb-4">
+                <MessageCircle className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">AI Companion</h3>
+              <p className="text-muted-foreground">
+                Chat 24/7 with an empathetic AI companion specially trained to understand young people's mental health needs. Get personalized support, coping strategies, and emotional guidance in a judgment-free space that's always available when you need it most.
+              </p>
+            </Card>
+          </Link>
 
           <Link to="/mood">
             <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm cursor-pointer">
@@ -121,45 +123,53 @@ const Index = () => {
             </Card>
           </Link>
 
-          <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm">
-            <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mb-4">
-              <BookOpen className="w-6 h-6 text-secondary-foreground" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Wellness Tools</h3>
-            <p className="text-muted-foreground">
-              Access a comprehensive toolkit of mental wellness resources including guided breathing exercises, journaling prompts, gratitude practices, mindfulness meditation, sleep hygiene tips, and personalized self-care activities tailored to your needs.
-            </p>
-          </Card>
+          <Link to="/wellness-tools">
+            <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm cursor-pointer">
+              <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mb-4">
+                <BookOpen className="w-6 h-6 text-secondary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Wellness Tools</h3>
+              <p className="text-muted-foreground">
+                Access a comprehensive toolkit of mental wellness resources including guided breathing exercises, journaling prompts, gratitude practices, mindfulness meditation, sleep hygiene tips, and personalized self-care activities tailored to your needs.
+              </p>
+            </Card>
+          </Link>
 
-          <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm">
-            <div className="w-12 h-12 bg-success-light rounded-lg flex items-center justify-center mb-4">
-              <Users className="w-6 h-6 text-success" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Peer Support</h3>
-            <p className="text-muted-foreground">
-              Connect with peers who understand your journey in a safe, moderated community. Share experiences anonymously, offer mutual support, participate in group discussions, and find comfort knowing you're not alone in your mental health journey.
-            </p>
-          </Card>
+          <Link to="/peer-support">
+            <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm cursor-pointer">
+              <div className="w-12 h-12 bg-success-light rounded-lg flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-success" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Peer Support</h3>
+              <p className="text-muted-foreground">
+                Connect with peers who understand your journey in a safe, moderated community. Share experiences anonymously, offer mutual support, participate in group discussions, and find comfort knowing you're not alone in your mental health journey.
+              </p>
+            </Card>
+          </Link>
 
-          <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm">
-            <div className="w-12 h-12 bg-warning/20 rounded-lg flex items-center justify-center mb-4">
-              <Shield className="w-6 h-6 text-warning" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Crisis Support</h3>
-            <p className="text-muted-foreground">
-              Get immediate help when you need it most. Access 24/7 crisis hotlines, emergency contacts, local mental health services, and professional resources. Our system recognizes crisis situations and provides instant support pathways to keep you safe.
-            </p>
-          </Card>
+          <Link to="/crisis-support">
+            <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm cursor-pointer">
+              <div className="w-12 h-12 bg-warning/20 rounded-lg flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-warning" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Crisis Support</h3>
+              <p className="text-muted-foreground">
+                Get immediate help when you need it most. Access 24/7 crisis hotlines, emergency contacts, local mental health services, and professional resources. Our system recognizes crisis situations and provides instant support pathways to keep you safe.
+              </p>
+            </Card>
+          </Link>
 
-          <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm">
-            <div className="w-12 h-12 bg-primary-light rounded-lg flex items-center justify-center mb-4">
-              <Sparkles className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Gamification</h3>
-            <p className="text-muted-foreground">
-              Stay motivated with engaging gamification features. Earn achievement badges, maintain wellness streaks, unlock new tools, track progress milestones, and celebrate your mental health victories with a supportive reward system designed to encourage positive habits.
-            </p>
-          </Card>
+          <Link to="/gamification">
+            <Card className="p-6 shadow-soft hover:shadow-warm transition-all duration-300 border-0 bg-card/80 backdrop-blur-sm cursor-pointer">
+              <div className="w-12 h-12 bg-primary-light rounded-lg flex items-center justify-center mb-4">
+                <Sparkles className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Gamification</h3>
+              <p className="text-muted-foreground">
+                Stay motivated with engaging stress-relief games. Play interactive activities designed to reduce anxiety, improve focus, and promote relaxation while earning achievements and tracking your wellness progress in a fun, engaging way.
+              </p>
+            </Card>
+          </Link>
         </div>
       </section>
 
