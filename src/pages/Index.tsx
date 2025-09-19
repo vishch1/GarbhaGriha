@@ -2,8 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heart, MessageCircle, BookOpen, Users, Shield, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { UserProfile } from "@/components/UserProfile";
 
 const Index = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-calm">
       {/* Header */}
@@ -22,12 +26,18 @@ const Index = () => {
             <Link to="/community">
               <Button variant="ghost" size="sm">Community</Button>
             </Link>
-            <Link to="/auth">
-              <Button variant="outline" size="sm">Sign In</Button>
-            </Link>
-            <Link to="/chat">
-              <Button variant="outline" size="sm">Start Chat</Button>
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link to="/chat">
+                  <Button variant="outline" size="sm">Start Chat</Button>
+                </Link>
+                <UserProfile />
+              </>
+            ) : (
+              <Link to="/auth">
+                <Button variant="outline" size="sm">Sign In</Button>
+              </Link>
+            )}
           </div>
         </nav>
       </header>
