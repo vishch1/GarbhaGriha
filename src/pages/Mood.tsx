@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Calendar, TrendingUp, Heart } from "lucide-react";
+import { ArrowLeft, Calendar, TrendingUp, Heart, Activity, BarChart3, Droplets, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 interface MoodEntry {
   id: string;
@@ -11,41 +13,119 @@ interface MoodEntry {
   emoji: string;
   date: Date;
   note?: string;
+  energy?: number;
+  sleep?: number;
+  stress?: number;
+}
+
+interface HealthMetrics {
+  date: string;
+  mood: number;
+  energy: number;
+  sleep: number;
+  stress: number;
+  hydration: number;
 }
 
 const moodOptions = [
-  { emoji: "😄", label: "Amazing", value: "amazing", color: "bg-success" },
-  { emoji: "😊", label: "Good", value: "good", color: "bg-primary" },
-  { emoji: "😐", label: "Okay", value: "okay", color: "bg-warning" },
-  { emoji: "😔", label: "Low", value: "low", color: "bg-accent" },
-  { emoji: "😢", label: "Struggling", value: "struggling", color: "bg-destructive" },
+  { emoji: "😄", label: "Amazing", value: "amazing", color: "bg-success", score: 5 },
+  { emoji: "😊", label: "Good", value: "good", color: "bg-primary", score: 4 },
+  { emoji: "😐", label: "Okay", value: "okay", color: "bg-warning", score: 3 },
+  { emoji: "😔", label: "Low", value: "low", color: "bg-accent", score: 2 },
+  { emoji: "😢", label: "Struggling", value: "struggling", color: "bg-destructive", score: 1 },
 ];
+
+const chartConfig = {
+  mood: {
+    label: "Mood",
+    color: "hsl(var(--primary))",
+  },
+  energy: {
+    label: "Energy",
+    color: "hsl(var(--success))",
+  },
+  sleep: {
+    label: "Sleep Quality",
+    color: "hsl(var(--accent))",
+  },
+  stress: {
+    label: "Stress Level",
+    color: "hsl(var(--warning))",
+  },
+};
 
 const Mood = () => {
   const [selectedMood, setSelectedMood] = useState<string>("");
+  const [energyLevel, setEnergyLevel] = useState<number>(3);
+  const [sleepQuality, setSleepQuality] = useState<number>(3);
+  const [stressLevel, setStressLevel] = useState<number>(3);
+  const [hydrationLevel, setHydrationLevel] = useState<number>(85);
   const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([
     {
       id: "1",
       mood: "good",
       emoji: "😊",
       date: new Date(Date.now() - 86400000),
-      note: "Had a nice chat with a friend"
+      note: "Had a nice chat with a friend",
+      energy: 4,
+      sleep: 3,
+      stress: 2
     },
     {
       id: "2", 
       mood: "okay",
       emoji: "😐",
       date: new Date(Date.now() - 172800000),
+      energy: 3,
+      sleep: 2,
+      stress: 3
     },
     {
       id: "3",
       mood: "amazing",
       emoji: "😄", 
       date: new Date(Date.now() - 259200000),
-      note: "Finished a project I was working on!"
+      note: "Finished a project I was working on!",
+      energy: 5,
+      sleep: 4,
+      stress: 1
     }
   ]);
   const { toast } = useToast();
+
+  // Generate chart data for the last 7 days
+  const chartData = useMemo(() => {
+    const data: HealthMetrics[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(Date.now() - (i * 86400000));
+      const dayEntry = moodHistory.find(entry => 
+        entry.date.toDateString() === date.toDateString()
+      );
+      
+      const moodScore = dayEntry ? moodOptions.find(m => m.value === dayEntry.mood)?.score || 3 : 3;
+      
+      data.push({
+        date: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        mood: moodScore,
+        energy: dayEntry?.energy || Math.floor(Math.random() * 2) + 3,
+        sleep: dayEntry?.sleep || Math.floor(Math.random() * 2) + 3,
+        stress: dayEntry?.stress || Math.floor(Math.random() * 2) + 2,
+        hydration: Math.floor(Math.random() * 20) + 75,
+      });
+    }
+    return data;
+  }, [moodHistory]);
+
+  // Calculate weekly averages
+  const weeklyAverages = useMemo(() => {
+    const totalEntries = chartData.length;
+    return {
+      mood: Math.round((chartData.reduce((sum, day) => sum + day.mood, 0) / totalEntries) * 20), // Convert to percentage
+      energy: Math.round((chartData.reduce((sum, day) => sum + day.energy, 0) / totalEntries) * 20),
+      sleep: Math.round((chartData.reduce((sum, day) => sum + day.sleep, 0) / totalEntries) * 20),
+      stress: Math.round((chartData.reduce((sum, day) => sum + day.stress, 0) / totalEntries) * 20),
+    };
+  }, [chartData]);
 
   const saveMood = () => {
     if (!selectedMood) return;
@@ -58,14 +138,20 @@ const Mood = () => {
       mood: selectedMood,
       emoji: moodOption.emoji,
       date: new Date(),
+      energy: energyLevel,
+      sleep: sleepQuality,
+      stress: stressLevel,
     };
 
     setMoodHistory(prev => [newEntry, ...prev]);
     setSelectedMood("");
+    setEnergyLevel(3);
+    setSleepQuality(3);
+    setStressLevel(3);
     
     toast({
-      title: "Mood logged!",
-      description: `Thanks for checking in. Remember, all feelings are valid. ${moodOption.emoji}`,
+      title: "Daily check-in complete!",
+      description: `Thanks for tracking your wellness. Keep taking care of yourself! ${moodOption.emoji}`,
     });
   };
 
@@ -111,39 +197,191 @@ const Mood = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
-        {/* Today's Mood Check-in */}
-        <Card className="p-6 shadow-soft border-0 bg-card/80 backdrop-blur-sm mb-6">
-          <h2 className="text-2xl font-bold mb-2">How are you feeling today?</h2>
-          <p className="text-muted-foreground mb-6">
-            Check in with yourself. There's no right or wrong answer - just honesty.
-          </p>
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        {/* Weekly Activity Dashboard */}
+        <div className="grid lg:grid-cols-4 gap-4 mb-6">
+          {/* Hydration Progress */}
+          <Card className="p-4 shadow-soft border-0 bg-card/80 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Droplets className="w-5 h-5 text-primary" />
+                <span className="font-medium">Hydration</span>
+              </div>
+              <span className="text-2xl font-bold">{hydrationLevel}%</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div 
+                className="bg-gradient-primary h-2 rounded-full transition-all duration-500" 
+                style={{ width: `${hydrationLevel}%` }}
+              />
+            </div>
+          </Card>
 
-          <div className="grid grid-cols-5 gap-3 mb-6">
-            {moodOptions.map((mood) => (
-              <button
-                key={mood.value}
-                onClick={() => setSelectedMood(mood.value)}
-                className={`flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-300 ${
-                  selectedMood === mood.value
-                    ? 'border-primary bg-primary-light shadow-glow'
-                    : 'border-border hover:border-primary/50 hover:shadow-soft'
-                }`}
-              >
-                <span className="text-3xl mb-2">{mood.emoji}</span>
-                <span className="text-sm font-medium">{mood.label}</span>
-              </button>
-            ))}
-          </div>
+          {/* Mood Tracker */}
+          <Card className="p-4 shadow-soft border-0 bg-card/80 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Heart className="w-5 h-5 text-accent" />
+                <span className="font-medium">Mood</span>
+              </div>
+              <span className="text-2xl font-bold">{weeklyAverages.mood}%</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div 
+                className="bg-gradient-warm h-2 rounded-full transition-all duration-500" 
+                style={{ width: `${weeklyAverages.mood}%` }}
+              />
+            </div>
+          </Card>
 
-          <Button 
-            onClick={saveMood}
-            disabled={!selectedMood}
-            className="bg-gradient-primary hover:shadow-glow transition-all duration-300 w-full sm:w-auto"
-          >
-            Log My Mood
-          </Button>
-        </Card>
+          {/* Sleep Quality */}
+          <Card className="p-4 shadow-soft border-0 bg-card/80 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Moon className="w-5 h-5 text-success" />
+                <span className="font-medium">Sleep Quality</span>
+              </div>
+              <span className="text-2xl font-bold">{weeklyAverages.sleep}%</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div 
+                className="bg-success h-2 rounded-full transition-all duration-500" 
+                style={{ width: `${weeklyAverages.sleep}%` }}
+              />
+            </div>
+          </Card>
+
+          {/* Energy Level */}
+          <Card className="p-4 shadow-soft border-0 bg-card/80 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Activity className="w-5 h-5 text-warning" />
+                <span className="font-medium">Energy</span>
+              </div>
+              <span className="text-2xl font-bold">{weeklyAverages.energy}%</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div 
+                className="bg-warning h-2 rounded-full transition-all duration-500" 
+                style={{ width: `${weeklyAverages.energy}%` }}
+              />
+            </div>
+          </Card>
+        </div>
+
+        {/* Health Trends Chart */}
+        <div className="grid lg:grid-cols-3 gap-6 mb-6">
+          <Card className="lg:col-span-2 p-6 shadow-soft border-0 bg-card/80 backdrop-blur-sm">
+            <div className="flex items-center gap-2 mb-4">
+              <BarChart3 className="w-5 h-5 text-primary" />
+              <h3 className="text-xl font-semibold">Health Trends (7 Days)</h3>
+            </div>
+            <ChartContainer config={chartConfig} className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" />
+                  <YAxis domain={[1, 5]} stroke="hsl(var(--muted-foreground))" />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Line 
+                    type="monotone" 
+                    dataKey="mood" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={3}
+                    dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="energy" 
+                    stroke="hsl(var(--success))" 
+                    strokeWidth={2}
+                    dot={{ fill: "hsl(var(--success))", strokeWidth: 2, r: 3 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="sleep" 
+                    stroke="hsl(var(--accent))" 
+                    strokeWidth={2}
+                    dot={{ fill: "hsl(var(--accent))", strokeWidth: 2, r: 3 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </Card>
+
+          {/* Today's Check-in */}
+          <Card className="p-6 shadow-soft border-0 bg-card/80 backdrop-blur-sm">
+            <h3 className="text-xl font-semibold mb-4">Daily Check-in</h3>
+            
+            {/* Mood Selection */}
+            <div className="mb-4">
+              <label className="text-sm font-medium mb-2 block">How's your mood?</label>
+              <div className="grid grid-cols-5 gap-1">
+                {moodOptions.map((mood) => (
+                  <button
+                    key={mood.value}
+                    onClick={() => setSelectedMood(mood.value)}
+                    className={`flex flex-col items-center p-2 rounded-lg border transition-all duration-300 ${
+                      selectedMood === mood.value
+                        ? 'border-primary bg-primary-light shadow-glow'
+                        : 'border-border hover:border-primary/50'
+                    }`}
+                  >
+                    <span className="text-lg">{mood.emoji}</span>
+                    <span className="text-xs">{mood.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Energy Level */}
+            <div className="mb-4">
+              <label className="text-sm font-medium mb-2 block">Energy Level ({energyLevel}/5)</label>
+              <input
+                type="range"
+                min="1"
+                max="5"
+                value={energyLevel}
+                onChange={(e) => setEnergyLevel(Number(e.target.value))}
+                className="w-full accent-success"
+              />
+            </div>
+
+            {/* Sleep Quality */}
+            <div className="mb-4">
+              <label className="text-sm font-medium mb-2 block">Sleep Quality ({sleepQuality}/5)</label>
+              <input
+                type="range"
+                min="1"
+                max="5"
+                value={sleepQuality}
+                onChange={(e) => setSleepQuality(Number(e.target.value))}
+                className="w-full accent-accent"
+              />
+            </div>
+
+            {/* Stress Level */}
+            <div className="mb-6">
+              <label className="text-sm font-medium mb-2 block">Stress Level ({stressLevel}/5)</label>
+              <input
+                type="range"
+                min="1"
+                max="5"
+                value={stressLevel}
+                onChange={(e) => setStressLevel(Number(e.target.value))}
+                className="w-full accent-warning"
+              />
+            </div>
+
+            <Button 
+              onClick={saveMood}
+              disabled={!selectedMood}
+              className="bg-gradient-primary hover:shadow-glow transition-all duration-300 w-full"
+            >
+              Complete Check-in
+            </Button>
+          </Card>
+        </div>
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-3 gap-4 mb-6">
