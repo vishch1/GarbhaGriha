@@ -115,10 +115,10 @@ const Auth = () => {
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
               <Heart className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-semibold text-foreground">MindSpace</span>
+            <span className="text-xl font-semibold text-foreground">GarbhaGriha</span>
           </Link>
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            {isSignUp ? "Join MindSpace" : "Welcome Back"}
+            {isSignUp ? "Join GarbhaGriha" : "Welcome Back"}
           </h1>
           <p className="text-muted-foreground">
             {isSignUp 

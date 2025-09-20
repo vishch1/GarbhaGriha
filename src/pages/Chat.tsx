@@ -17,11 +17,12 @@ interface Message {
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
-      content: "Hi there! I'm your AI wellness companion. I'm here to listen without judgment and support you on your mental health journey. How are you feeling today? 💙",
+      id: "1",
+      content:
+        "Hi there! I'm your AI wellness companion. I'm here to listen without judgment and support you on your mental health journey. How are you feeling today? 💙",
       isUser: false,
       timestamp: new Date(),
-    }
+    },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -36,28 +37,42 @@ const Chat = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Mock crisis detection - in real app this would use NLP
+  // Crisis detection
   const detectCrisisKeywords = (message: string): boolean => {
-    const crisisKeywords = ['suicide', 'kill myself', 'end it all', 'self-harm', 'hurt myself', 'want to die'];
-    return crisisKeywords.some(keyword => message.toLowerCase().includes(keyword));
-  };
-
-  const generateAIResponse = (userMessage: string): string => {
-    // Mock AI responses - in real app this would call GPT-4o API
-    const responses = [
-      "Thank you for sharing that with me. It takes courage to open up about how you're feeling. Can you tell me more about what's been on your mind?",
-      "I hear you, and your feelings are completely valid. Many young people go through similar experiences. What would help you feel a bit better right now?",
-      "That sounds really challenging. Remember that you're stronger than you know, and it's okay to feel this way. Have you tried any coping strategies that have helped before?",
-      "I'm glad you felt comfortable sharing that with me. Your mental health journey is unique, and every small step forward matters. What's one thing that brought you even a tiny bit of joy recently?",
-      "It's okay to not be okay sometimes. You're taking a positive step by talking about it. Would you like to try a brief breathing exercise together, or would you prefer to keep talking?"
+    const crisisKeywords = [
+      "suicide",
+      "kill myself",
+      "end it all",
+      "self-harm",
+      "hurt myself",
+      "want to die",
     ];
-    
-    return responses[Math.floor(Math.random() * responses.length)];
+    return crisisKeywords.some((keyword) =>
+      message.toLowerCase().includes(keyword)
+    );
   };
 
+  // Frontend commands
+  const handleCommand = (command: string): string | null => {
+    switch (command.toLowerCase()) {
+      case "joke":
+        return "Why don’t scientists trust atoms? Because they make up everything! 😄";
+      case "motivate":
+        return "Remember, every small step you take is progress. You’ve got this! 💪";
+      case "breathe":
+        return "Let's take a deep breath together… Inhale… Exhale… 🌬️";
+      case "resource":
+        return "You can check out mental health resources here: https://www.mentalhealth.gov/ 📚";
+      default:
+        return null;
+    }
+  };
+
+  // Send message
   const sendMessage = async () => {
     if (!inputValue.trim()) return;
 
+    const commandResponse = handleCommand(inputValue.trim());
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
@@ -65,35 +80,67 @@ const Chat = () => {
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
     setIsTyping(true);
 
-    // Check for crisis keywords
-    if (detectCrisisKeywords(inputValue)) {
+    // Crisis detection toast
+    if (detectCrisisKeywords(userMessage.content)) {
       toast({
         title: "Crisis Support Available",
-        description: "I've detected you might be in distress. Professional help is available 24/7.",
+        description:
+          'I detected you might be in distress. Please call 988 or text "HELLO" to 741741 for immediate help.',
         variant: "destructive",
       });
     }
 
-    // Simulate AI thinking time
-    setTimeout(() => {
-      const aiResponse: Message = {
+    // Instant command response
+    if (commandResponse) {
+      const aiCommandMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: generateAIResponse(inputValue),
+        content: commandResponse,
         isUser: false,
         timestamp: new Date(),
       };
+      setTimeout(() => {
+        setMessages((prev) => [...prev, aiCommandMessage]);
+        setIsTyping(false);
+      }, 500);
+      return;
+    }
 
-      setMessages(prev => [...prev, aiResponse]);
+    // Call backend OpenRouter API
+    try {
+      const res = await fetch("http://localhost:5000/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage.content }),
+      });
+
+      const data = await res.json();
+      const aiResponse: Message = {
+        id: (Date.now() + 2).toString(),
+        content: data.reply || "Sorry, I couldn't respond. 😅",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiResponse]);
+    } catch (err) {
+      const errorMessage: Message = {
+        id: (Date.now() + 3).toString(),
+        content: "Oops! Something went wrong. 😢",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      console.error("Chat frontend error:", err);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
@@ -120,8 +167,12 @@ const Chat = () => {
               </div>
             </div>
           </div>
-          
-          <Button variant="outline" size="sm" className="text-destructive border-destructive">
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-destructive border-destructive"
+          >
             <Phone className="w-4 h-4 mr-2" />
             Crisis Help
           </Button>
@@ -134,7 +185,7 @@ const Chat = () => {
           <div className="flex items-center gap-2 text-sm">
             <AlertTriangle className="w-4 h-4 text-destructive" />
             <span className="text-destructive font-medium">
-              If you're in crisis: Call 988 (Suicide & Crisis Lifeline) or text "HELLO" to 741741
+              If you're in crisis: Call 988 or text "HELLO" to 741741
             </span>
           </div>
         </div>
@@ -146,35 +197,50 @@ const Chat = () => {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${message.isUser ? "justify-end" : "justify-start"}`}
             >
-              <Card className={`max-w-xs sm:max-w-md p-4 shadow-soft border-0 ${
-                message.isUser 
-                  ? 'bg-gradient-primary text-primary-foreground' 
-                  : 'bg-card'
-              }`}>
+              <Card
+                className={`max-w-xs sm:max-w-md p-4 shadow-soft border-0 ${
+                  message.isUser
+                    ? "bg-gradient-primary text-primary-foreground"
+                    : "bg-card"
+                }`}
+              >
                 <p className="text-sm leading-relaxed">{message.content}</p>
-                <p className={`text-xs mt-2 ${
-                  message.isUser ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                }`}>
-                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                <p
+                  className={`text-xs mt-2 ${
+                    message.isUser
+                      ? "text-primary-foreground/70"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {message.timestamp.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </p>
               </Card>
             </div>
           ))}
-          
+
           {isTyping && (
             <div className="flex justify-start">
               <Card className="max-w-xs p-4 shadow-soft border-0 bg-card">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce"
+                    style={{ animationDelay: "0.1s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
                 </div>
               </Card>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -187,10 +253,10 @@ const Chat = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Share what's on your mind..."
+              placeholder='Type a message or command: "joke", "motivate", "breathe", "resource"'
               className="flex-1 border-border/50 focus:border-primary"
             />
-            <Button 
+            <Button
               onClick={sendMessage}
               disabled={!inputValue.trim() || isTyping}
               className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
